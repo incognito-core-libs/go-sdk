@@ -4,7 +4,7 @@ import (
 	"github.com/incognito-core-libs/go-sdk/common/types"
 	ledgergo "github.com/incognito-core-libs/ledger-cosmos-go"
 	"github.com/incognito-core-libs/btcd/btcec"
-	tmbtcec "github.com/hoang-incognito/btcd/btcec"
+	tmbtcec "github.com/incognito-core-libs/tendermint-btcd/btcec"
 	"github.com/incognito-core-libs/tendermint/crypto"
 	"github.com/incognito-core-libs/tendermint/crypto/secp256k1"
 )
