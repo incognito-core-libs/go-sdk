@@ -3,18 +3,16 @@ package client
 import (
 	"gopkg.in/resty.v1"
 
-	"github.com/incognito-core-libs/go-sdk/client/basic"
-	"github.com/incognito-core-libs/go-sdk/client/query"
-	"github.com/incognito-core-libs/go-sdk/client/transaction"
-	"github.com/incognito-core-libs/go-sdk/client/websocket"
-	"github.com/incognito-core-libs/go-sdk/common/types"
-	"github.com/incognito-core-libs/go-sdk/keys"
+	"github.com/bnb-chain/go-sdk/client/basic"
+	"github.com/bnb-chain/go-sdk/client/query"
+	"github.com/bnb-chain/go-sdk/client/transaction"
+	"github.com/bnb-chain/go-sdk/common/types"
+	"github.com/bnb-chain/go-sdk/keys"
 )
 
 // dexClient wrapper
 type dexClient struct {
 	query.QueryClient
-	websocket.WSClient
 	transaction.TransactionClient
 	basic.BasicClient
 }
@@ -23,7 +21,6 @@ type dexClient struct {
 type DexClient interface {
 	basic.BasicClient
 	query.QueryClient
-	websocket.WSClient
 	transaction.TransactionClient
 }
 
@@ -31,15 +28,26 @@ func init() {
 	resty.DefaultClient.SetRedirectPolicy(resty.FlexibleRedirectPolicy(10))
 }
 
-func NewDexClient(baseUrl string, network types.ChainNetwork, keyManager keys.KeyManager) (DexClient, error) {
-	types.Network = network
-	c := basic.NewClient(baseUrl)
-	w := websocket.NewClient(c)
+func NewDexClientWithApiKey(baseUrl string, network types.ChainNetwork, keyManager keys.KeyManager, apiKey string) (DexClient, error) {
+	types.SetNetwork(network)
+	c := basic.NewClient(baseUrl+"/internal", apiKey)
 	q := query.NewClient(c)
 	n, err := q.GetNodeInfo()
 	if err != nil {
 		return nil, err
 	}
 	t := transaction.NewClient(n.NodeInfo.Network, keyManager, q, c)
-	return &dexClient{BasicClient: c, QueryClient: q, TransactionClient: t, WSClient: w}, nil
+	return &dexClient{BasicClient: c, QueryClient: q, TransactionClient: t}, nil
+}
+
+func NewDexClient(baseUrl string, network types.ChainNetwork, keyManager keys.KeyManager) (DexClient, error) {
+	types.SetNetwork(network)
+	c := basic.NewClient(baseUrl, "")
+	q := query.NewClient(c)
+	n, err := q.GetNodeInfo()
+	if err != nil {
+		return nil, err
+	}
+	t := transaction.NewClient(n.NodeInfo.Network, keyManager, q, c)
+	return &dexClient{BasicClient: c, QueryClient: q, TransactionClient: t}, nil
 }

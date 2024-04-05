@@ -1,132 +1,165 @@
 package msg
 
 import (
-	"fmt"
-	"regexp"
-	"strings"
-
-	"github.com/incognito-core-libs/go-sdk/common/types"
-
-	"github.com/pkg/errors"
-
-	"github.com/incognito-core-libs/go-sdk/common"
+	"github.com/bnb-chain/node/plugins/account"
+	bTypes "github.com/bnb-chain/node/plugins/bridge/types"
+	"github.com/bnb-chain/node/plugins/dex/order"
+	dexTypes "github.com/bnb-chain/node/plugins/dex/types"
+	"github.com/bnb-chain/node/plugins/tokens/burn"
+	"github.com/bnb-chain/node/plugins/tokens/freeze"
+	"github.com/bnb-chain/node/plugins/tokens/issue"
+	"github.com/bnb-chain/node/plugins/tokens/ownership"
+	"github.com/bnb-chain/node/plugins/tokens/seturi"
+	"github.com/bnb-chain/node/plugins/tokens/swap"
+	"github.com/bnb-chain/node/plugins/tokens/timelock"
+	cTypes "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/bank"
+	"github.com/cosmos/cosmos-sdk/x/gov"
+	oracleTypes "github.com/cosmos/cosmos-sdk/x/oracle/types"
+	"github.com/cosmos/cosmos-sdk/x/slashing"
+	stakeTypes "github.com/cosmos/cosmos-sdk/x/stake/types"
 )
 
-// constants
-const (
-	DotBSuffix                    = ".B"
-	NativeToken                   = "BNB"
-	NativeTokenDotBSuffixed       = "BNB" + DotBSuffix
-	Decimals                int8  = 8
-	MaxTotalSupply          int64 = 9000000000000000000 // 90 billions with 8 decimal digits
+// Msg definition
+type (
+	SmartChainAddress = cTypes.SmartChainAddress
 
-	TokenSymbolMaxLen          = 8
-	TokenSymbolMinLen          = 3
-	TokenSymbolTxHashSuffixLen = 3
+	// bridge module
+	BindMsg        = bTypes.BindMsg
+	TransferOutMsg = bTypes.TransferOutMsg
+	UnbindMsg      = bTypes.UnbindMsg
+
+	// token module
+	TokenBurnMsg         = burn.BurnMsg
+	DexListMsg           = dexTypes.ListMsg
+	ListMiniMsg          = dexTypes.ListMiniMsg
+	TokenFreezeMsg       = freeze.FreezeMsg
+	TokenUnfreezeMsg     = freeze.UnfreezeMsg
+	TokenIssueMsg        = issue.IssueMsg
+	MiniTokenIssueMsg    = issue.IssueMiniMsg
+	TinyTokenIssueMsg    = issue.IssueTinyMsg
+	MintMsg              = issue.MintMsg
+	SendMsg              = bank.MsgSend
+	SetURIMsg            = seturi.SetURIMsg
+	TimeLockMsg          = timelock.TimeLockMsg
+	TimeRelockMsg        = timelock.TimeRelockMsg
+	TimeUnlockMsg        = timelock.TimeUnlockMsg
+	TransferOwnershipMsg = ownership.TransferOwnershipMsg
+
+	// gov module
+	SubmitProposalMsg          = gov.MsgSubmitProposal
+	DepositMsg                 = gov.MsgDeposit
+	VoteMsg                    = gov.MsgVote
+	SideChainSubmitProposalMsg = gov.MsgSideChainSubmitProposal
+	SideChainDepositMsg        = gov.MsgSideChainDeposit
+	SideChainVoteMsg           = gov.MsgSideChainVote
+
+	// atomic swap module
+	HTLTMsg        = swap.HTLTMsg
+	DepositHTLTMsg = swap.DepositHTLTMsg
+	ClaimHTLTMsg   = swap.ClaimHTLTMsg
+	RefundHTLTMsg  = swap.RefundHTLTMsg
+
+	// oracle claim module
+	Claim    = oracleTypes.Claim
+	ClaimMsg = oracleTypes.ClaimMsg
+
+	// trade module
+	CreateOrderMsg = order.NewOrderMsg
+	CancelOrderMsg = order.CancelOrderMsg
+
+	// account module
+	SetAccountFlagsMsg = account.SetAccountFlagsMsg
+
+	// slash module
+	MsgSideChainUnjail = slashing.MsgSideChainUnjail
+	MsgUnjail          = slashing.MsgUnjail
+
+	// stake module
+	CreateSideChainValidatorMsg             = stakeTypes.MsgCreateSideChainValidator
+	MsgCreateSideChainValidatorWithVoteAddr = stakeTypes.MsgCreateSideChainValidatorWithVoteAddr
+	EditSideChainValidatorMsg               = stakeTypes.MsgEditSideChainValidator
+	MsgEditSideChainValidatorWithVoteAddr   = stakeTypes.MsgEditSideChainValidatorWithVoteAddr
+	SideChainDelegateMsg                    = stakeTypes.MsgSideChainDelegate
+	SideChainRedelegateMsg                  = stakeTypes.MsgSideChainRedelegate
+	SideChainUndelegateMsg                  = stakeTypes.MsgSideChainUndelegate
+	MsgCreateValidatorOpen                  = stakeTypes.MsgCreateValidatorOpen
+	MsgRemoveValidator                      = stakeTypes.MsgRemoveValidator
+	MsgEditValidator                        = stakeTypes.MsgEditValidator
+	MsgDelegate                             = stakeTypes.MsgDelegate
+	MsgRedelegate                           = stakeTypes.MsgRedelegate
+	MsgUndelegate                           = stakeTypes.MsgUndelegate
+	MsgSideChainStakeMigration              = stakeTypes.MsgSideChainStakeMigration
 )
 
-// Msg - Transactions messages must fulfill the Msg
-type Msg interface {
+var (
+	NewSmartChainAddress = cTypes.NewSmartChainAddress
 
-	// Return the message type.
-	// Must be alphanumeric or empty.
-	Route() string
+	// bridge module
+	NewBindMsg        = bTypes.NewBindMsg
+	NewTransferOutMsg = bTypes.NewTransferOutMsg
+	NewUnbindMsg      = bTypes.NewUnbindMsg
 
-	// Returns a human-readable string for the message, intended for utilization
-	// within tags
-	Type() string
+	// token module
+	NewTokenBurnMsg         = burn.NewMsg
+	NewDexListMsg           = dexTypes.NewListMsg
+	NewListMiniMsg          = dexTypes.NewListMiniMsg
+	NewFreezeMsg            = freeze.NewFreezeMsg
+	NewUnfreezeMsg          = freeze.NewUnfreezeMsg
+	NewTokenIssueMsg        = issue.NewIssueMsg
+	NewMiniTokenIssueMsg    = issue.NewIssueMiniMsg
+	NewTinyTokenIssueMsg    = issue.NewIssueTinyMsg
+	NewMintMsg              = issue.NewMintMsg
+	NewMsgSend              = bank.NewMsgSend
+	NewSetUriMsg            = seturi.NewSetUriMsg
+	NewTimeLockMsg          = timelock.NewTimeLockMsg
+	NewTimeRelockMsg        = timelock.NewTimeRelockMsg
+	NewTimeUnlockMsg        = timelock.NewTimeUnlockMsg
+	NewTransferOwnershipMsg = ownership.NewTransferOwnershipMsg
 
-	// ValidateBasic does a simple validation check that
-	// doesn't require access to any other information.
-	ValidateBasic() error
+	// gov module
+	NewDepositMsg                 = gov.NewMsgDeposit
+	NewMsgVote                    = gov.NewMsgVote
+	NewMsgSubmitProposal          = gov.NewMsgSubmitProposal
+	NewSideChainSubmitProposalMsg = gov.NewMsgSideChainSubmitProposal
+	NewSideChainDepositMsg        = gov.NewMsgSideChainDeposit
+	NewSideChainVoteMsg           = gov.NewMsgSideChainVote
 
-	// Get the canonical byte representation of the Msg.
-	GetSignBytes() []byte
+	// atomic swap module
+	NewHTLTMsg        = swap.NewHTLTMsg
+	NewDepositHTLTMsg = swap.NewDepositHTLTMsg
+	NewClaimHTLTMsg   = swap.NewClaimHTLTMsg
+	NewRefundHTLTMsg  = swap.NewRefundHTLTMsg
 
-	// Signers returns the addrs of signers that must sign.
-	// CONTRACT: All signatures must be present to be valid.
-	// CONTRACT: Returns addrs in some deterministic order.
-	GetSigners() []types.AccAddress
+	// oracle claim module
+	NewClaim    = oracleTypes.NewClaim
+	NewClaimMsg = oracleTypes.NewClaimMsg
 
-	// Get involved addresses of this msg so that we can publish account balance change
-	GetInvolvedAddresses() []types.AccAddress
-}
+	// trade module
+	NewCreateOrderMsg = order.NewNewOrderMsg
+	NewCancelOrderMsg = order.NewCancelOrderMsg
 
-// ValidateSymbol utility
-func ValidateSymbol(symbol string) error {
-	if len(symbol) == 0 {
-		return errors.New("suffixed token symbol cannot be empty")
-	}
+	// account module
+	NewSetAccountFlagsMsg = account.NewSetAccountFlagsMsg
 
-	// suffix exception for native token (less drama in existing tests)
-	if symbol == NativeToken ||
-		symbol == NativeTokenDotBSuffixed {
-		return nil
-	}
+	// slash module
+	NewMsgSideChainUnjail = slashing.NewMsgSideChainUnjail
+	NewMsgUnjail          = slashing.NewMsgUnjail
 
-	parts, err := splitSuffixedTokenSymbol(symbol)
-	if err != nil {
-		return err
-	}
-
-	symbolPart := parts[0]
-
-	// since the native token was given a suffix exception above, do not allow it to have a suffix
-	if symbolPart == NativeToken ||
-		symbolPart == NativeTokenDotBSuffixed {
-		return errors.New("native token symbol should not be suffixed with tx hash")
-	}
-
-	if strings.HasSuffix(symbolPart, DotBSuffix) {
-		symbolPart = strings.TrimSuffix(symbolPart, DotBSuffix)
-	}
-
-	// check len without .B suffix
-	if len(symbolPart) < TokenSymbolMinLen {
-		return fmt.Errorf("token symbol part is too short, got %d chars", len(symbolPart))
-	}
-	if len(symbolPart) > TokenSymbolMaxLen {
-		return fmt.Errorf("token symbol part is too long, got %d chars", len(symbolPart))
-	}
-
-	if !common.IsAlphaNum(symbolPart) {
-		return errors.New("token symbol part should be alphanumeric")
-	}
-
-	txHashPart := parts[1]
-
-	if len(txHashPart) != TokenSymbolTxHashSuffixLen {
-		return fmt.Errorf("token symbol tx hash suffix must be %d chars in length, got %d", TokenSymbolTxHashSuffixLen, len(txHashPart))
-	}
-
-	// prohibit non-hexadecimal chars in the suffix part
-	isHex, err := regexp.MatchString(fmt.Sprintf("[0-9A-F]{%d}", TokenSymbolTxHashSuffixLen), txHashPart)
-	if err != nil {
-		return err
-	}
-	if !isHex {
-		return fmt.Errorf("token symbol tx hash suffix must be hex with a length of %d", TokenSymbolTxHashSuffixLen)
-	}
-
-	return nil
-}
-
-func splitSuffixedTokenSymbol(suffixed string) ([]string, error) {
-	// as above, the native token symbol is given an exception - it is not required to be suffixed
-	if suffixed == NativeToken ||
-		suffixed == NativeTokenDotBSuffixed {
-		return []string{suffixed, ""}, nil
-	}
-
-	split := strings.SplitN(suffixed, "-", 2)
-
-	if len(split) != 2 {
-		return nil, errors.New("suffixed token symbol must contain a hyphen ('-')")
-	}
-
-	if strings.Contains(split[1], "-") {
-		return nil, errors.New("suffixed token symbol must contain just one hyphen ('-')")
-	}
-
-	return split, nil
-}
+	// stake module
+	NewCreateSideChainValidatorMsg                       = stakeTypes.NewMsgCreateSideChainValidator
+	NewCreateSideChainValidatorMsgWithVoteAddr           = stakeTypes.NewMsgCreateSideChainValidatorWithVoteAddr
+	NewMsgCreateSideChainValidatorOnBehalfOf             = stakeTypes.NewMsgCreateSideChainValidatorOnBehalfOf
+	NewMsgCreateSideChainValidatorOnBehalfOfWithVoteAddr = stakeTypes.NewMsgCreateSideChainValidatorWithVoteAddrOnBehalfOf
+	NewEditSideChainValidatorMsg                         = stakeTypes.NewMsgEditSideChainValidator
+	NewEditSideChainValidatorMsgWithVoteAddr             = stakeTypes.NewMsgEditSideChainValidatorWithVoteAddr
+	NewSideChainDelegateMsg                              = stakeTypes.NewMsgSideChainDelegate
+	NewSideChainRedelegateMsg                            = stakeTypes.NewMsgSideChainRedelegate
+	NewSideChainUndelegateMsg                            = stakeTypes.NewMsgSideChainUndelegate
+	NewMsgCreateValidatorOpen                            = stakeTypes.NewMsgRemoveValidator
+	NewMsgRemoveValidator                                = stakeTypes.NewMsgRemoveValidator
+	NewMsgEditValidator                                  = stakeTypes.NewMsgEditValidator
+	NewMsgDelegate                                       = stakeTypes.NewMsgDelegate
+	NewMsgRedelegate                                     = stakeTypes.NewMsgRedelegate
+	NewMsgUndelegate                                     = stakeTypes.NewMsgUndelegate
+)

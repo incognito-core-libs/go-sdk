@@ -5,10 +5,10 @@ import (
 	"strconv"
 	"time"
 
-	ctypes "github.com/incognito-core-libs/go-sdk/common/types"
-	"github.com/incognito-core-libs/go-sdk/types"
-	"github.com/incognito-core-libs/go-sdk/types/msg"
-	"github.com/incognito-core-libs/go-sdk/types/tx"
+	ctypes "github.com/bnb-chain/go-sdk/common/types"
+	"github.com/bnb-chain/go-sdk/types"
+	"github.com/bnb-chain/go-sdk/types/msg"
+	"github.com/bnb-chain/go-sdk/types/tx"
 )
 
 type SubmitProposalResult struct {

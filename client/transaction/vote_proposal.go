@@ -1,8 +1,8 @@
 package transaction
 
 import (
-	"github.com/incognito-core-libs/go-sdk/types/msg"
-	"github.com/incognito-core-libs/go-sdk/types/tx"
+	"github.com/bnb-chain/go-sdk/types/msg"
+	"github.com/bnb-chain/go-sdk/types/tx"
 )
 
 type VoteProposalResult struct {

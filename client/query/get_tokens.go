@@ -3,8 +3,8 @@ package query
 import (
 	"encoding/json"
 
-	"github.com/incognito-core-libs/go-sdk/common"
-	"github.com/incognito-core-libs/go-sdk/common/types"
+	"github.com/bnb-chain/go-sdk/common"
+	"github.com/bnb-chain/go-sdk/common/types"
 )
 
 // GetTokens returns list of tokens

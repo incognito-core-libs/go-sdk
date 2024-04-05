@@ -1,10 +1,10 @@
 package tx
 
 import (
-	"github.com/incognito-core-libs/go-amino"
-	"github.com/incognito-core-libs/tendermint/crypto/encoding/amino"
+	"github.com/tendermint/go-amino"
+	cryptoAmino "github.com/tendermint/tendermint/crypto/encoding/amino"
 
-	"github.com/incognito-core-libs/go-sdk/types/msg"
+	"github.com/bnb-chain/go-sdk/types/msg"
 )
 
 // cdc global variable

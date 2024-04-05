@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/incognito-core-libs/go-sdk/types/msg"
-	"github.com/incognito-core-libs/go-sdk/types/tx"
+	"github.com/bnb-chain/go-sdk/types/msg"
+	"github.com/bnb-chain/go-sdk/types/tx"
 )
 
 type IssueTokenResult struct {
@@ -23,7 +23,7 @@ type IssueTokenValue struct {
 
 func (c *client) IssueToken(name, symbol string, supply int64, sync bool, mintable bool, options ...Option) (*IssueTokenResult, error) {
 	if symbol == "" {
-		return nil, fmt.Errorf("Freeze token symbol can'c be empty ")
+		return nil, fmt.Errorf("Issue token symbol can't be empty ")
 	}
 	fromAddr := c.keyManager.GetAddr()
 

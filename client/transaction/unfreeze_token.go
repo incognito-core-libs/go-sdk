@@ -3,8 +3,8 @@ package transaction
 import (
 	"fmt"
 
-	"github.com/incognito-core-libs/go-sdk/types/msg"
-	"github.com/incognito-core-libs/go-sdk/types/tx"
+	"github.com/bnb-chain/go-sdk/types/msg"
+	"github.com/bnb-chain/go-sdk/types/tx"
 )
 
 type UnfreezeTokenResult struct {
@@ -13,7 +13,7 @@ type UnfreezeTokenResult struct {
 
 func (c *client) UnfreezeToken(symbol string, amount int64, sync bool, options ...Option) (*UnfreezeTokenResult, error) {
 	if symbol == "" {
-		return nil, fmt.Errorf("Freeze token symbol can'c be empty ")
+		return nil, fmt.Errorf("Unfreeze token symbol can't be empty ")
 	}
 	fromAddr := c.keyManager.GetAddr()
 
