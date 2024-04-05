@@ -1,6 +1,6 @@
 package types
 
-import "github.com/incognito-core-libs/go-amino"
+import "github.com/tendermint/go-amino"
 
 func RegisterWire(cdc *amino.Codec) {
 
@@ -16,4 +16,6 @@ func RegisterWire(cdc *amino.Codec) {
 
 	cdc.RegisterInterface((*Proposal)(nil), nil)
 	cdc.RegisterConcrete(&TextProposal{}, "gov/TextProposal", nil)
+
+	cdc.RegisterConcrete(MiniToken{}, "bnbchain/MiniToken", nil)
 }

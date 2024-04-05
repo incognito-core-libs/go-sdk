@@ -1,12 +1,14 @@
 package ledger
 
 import (
-	"github.com/incognito-core-libs/go-sdk/common/types"
-	ledgergo "github.com/incognito-core-libs/ledger-cosmos-go"
-	"github.com/incognito-core-libs/btcd/btcec"
-	tmbtcec "github.com/incognito-core-libs/tendermint-btcd/btcec"
-	"github.com/incognito-core-libs/tendermint/crypto"
-	"github.com/incognito-core-libs/tendermint/crypto/secp256k1"
+	"github.com/btcsuite/btcd/btcec/v2"
+	"github.com/btcsuite/btcd/btcec/v2/ecdsa"
+	stypes "github.com/cosmos/cosmos-sdk/types"
+	tmbtcec "github.com/tendermint/btcd/btcec"
+	"github.com/tendermint/tendermint/crypto"
+	"github.com/tendermint/tendermint/crypto/secp256k1"
+	ledgergo "github.com/zondax/ledger-cosmos-go"
+	"math/big"
 )
 
 var (
@@ -52,7 +54,7 @@ func GenLedgerSecp256k1Key(path DerivationPath, device LedgerSecp256k1) (*PrivKe
 		return nil, err
 	}
 	// re-serialize in the 33-byte compressed format
-	cmp, err := btcec.ParsePubKey(pubkey[:], btcec.S256())
+	cmp, err := btcec.ParsePubKey(pubkey[:])
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +69,7 @@ func (pkl PrivKeyLedgerSecp256k1) Bytes() []byte {
 }
 
 func (pkl PrivKeyLedgerSecp256k1) ShowSignAddr() error {
-	return pkl.ledger.ShowAddressSECP256K1(pkl.path, types.Network.Bech32Prefixes())
+	return pkl.ledger.ShowAddressSECP256K1(pkl.path, stypes.GetConfig().GetBech32AccountAddrPrefix())
 }
 
 func (pkl PrivKeyLedgerSecp256k1) Sign(msg []byte) ([]byte, error) {
@@ -95,10 +97,13 @@ func (pkl PrivKeyLedgerSecp256k1) Equals(other crypto.PrivKey) bool {
 }
 
 func convertDERtoBER(signatureDER []byte) ([]byte, error) {
-	sigDER, err := btcec.ParseSignature(signatureDER[:], btcec.S256())
+	sigDER, err := ecdsa.ParseDERSignature(signatureDER[:])
 	if err != nil {
 		return nil, err
 	}
-	sigBER := tmbtcec.Signature{R: sigDER.R, S: sigDER.S}
+	sig := sigDER.Serialize() // 0x30 <total length> 0x02 <length of R> <R> 0x02 <length of S> <S>
+	r := new(big.Int).SetBytes(sig[4:36])
+	s := new(big.Int).SetBytes(sig[38:70])
+	sigBER := tmbtcec.Signature{R: r, S: s}
 	return sigBER.Serialize(), nil
 }

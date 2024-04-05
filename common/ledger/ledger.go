@@ -1,9 +1,10 @@
+//go:build cgo && ledger
 // +build cgo,ledger
 
 package ledger
 
 import (
-	ledger "github.com/incognito-core-libs/ledger-cosmos-go"
+	ledger "github.com/zondax/ledger-cosmos-go"
 )
 
 // If ledger support (build tag) has been enabled, which implies a CGO dependency,

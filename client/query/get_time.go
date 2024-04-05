@@ -3,7 +3,7 @@ package query
 import (
 	"encoding/json"
 
-	"github.com/incognito-core-libs/go-sdk/common/types"
+	"github.com/bnb-chain/go-sdk/common/types"
 )
 
 // GetTime returns market depth records

@@ -3,15 +3,16 @@ package transaction
 import (
 	"fmt"
 
-	"github.com/incognito-core-libs/go-sdk/common"
-	"github.com/incognito-core-libs/go-sdk/types/msg"
-	"github.com/incognito-core-libs/go-sdk/types/tx"
+	"github.com/bnb-chain/go-sdk/common"
+	"github.com/bnb-chain/go-sdk/types/msg"
+	"github.com/bnb-chain/go-sdk/types/tx"
 )
 
 type CancelOrderResult struct {
 	tx.TxCommitResult
 }
 
+// CancelOrder deprecated
 func (c *client) CancelOrder(baseAssetSymbol, quoteAssetSymbol, refId string, sync bool, options ...Option) (*CancelOrderResult, error) {
 	if baseAssetSymbol == "" || quoteAssetSymbol == "" {
 		return nil, fmt.Errorf("BaseAssetSymbol or QuoteAssetSymbol is missing. ")
@@ -29,5 +30,4 @@ func (c *client) CancelOrder(baseAssetSymbol, quoteAssetSymbol, refId string, sy
 	}
 
 	return &CancelOrderResult{*commit}, nil
-
 }

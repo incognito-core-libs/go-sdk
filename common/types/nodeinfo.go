@@ -3,10 +3,9 @@ package types
 import (
 	"time"
 
-	"github.com/incognito-core-libs/tendermint/libs/common"
+	"github.com/tendermint/tendermint/libs/common"
 )
 
-// Account definition
 type ResultStatus struct {
 	NodeInfo      NodeInfo      `json:"node_info"`
 	SyncInfo      SyncInfo      `json:"sync_info"`

@@ -2,7 +2,8 @@ package query
 
 import (
 	"encoding/json"
-	"github.com/incognito-core-libs/go-sdk/common/types"
+
+	"github.com/bnb-chain/go-sdk/common/types"
 )
 
 func (c *client) GetNodeInfo() (*types.ResultStatus, error) {

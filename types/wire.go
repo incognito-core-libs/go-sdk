@@ -1,10 +1,10 @@
 package types
 
 import (
-	ntypes "github.com/incognito-core-libs/go-sdk/common/types"
-	"github.com/incognito-core-libs/go-sdk/types/tx"
-	"github.com/incognito-core-libs/go-amino"
-	types "github.com/incognito-core-libs/tendermint/rpc/core/types"
+	ntypes "github.com/bnb-chain/go-sdk/common/types"
+	"github.com/bnb-chain/go-sdk/types/tx"
+	"github.com/tendermint/go-amino"
+	types "github.com/tendermint/tendermint/rpc/core/types"
 )
 
 func NewCodec() *amino.Codec {

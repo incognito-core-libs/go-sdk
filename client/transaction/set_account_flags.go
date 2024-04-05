@@ -2,9 +2,10 @@ package transaction
 
 import (
 	"fmt"
-	"github.com/incognito-core-libs/go-sdk/common/types"
-	"github.com/incognito-core-libs/go-sdk/types/msg"
-	"github.com/incognito-core-libs/go-sdk/types/tx"
+
+	"github.com/bnb-chain/go-sdk/common/types"
+	"github.com/bnb-chain/go-sdk/types/msg"
+	"github.com/bnb-chain/go-sdk/types/tx"
 )
 
 type SetAccountFlagsResult struct {
